@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.toyproject.bookmanagement.aop.annotation.ValidAspect;
+import com.toyproject.bookmanagement.dto.auth.LoginReqDto;
 import com.toyproject.bookmanagement.dto.auth.SignupReqDto;
 import com.toyproject.bookmanagement.service.AuthenticationService;
 
@@ -22,25 +23,25 @@ import lombok.RequiredArgsConstructor;
 public class AuthenticationController {
 	
 	private final AuthenticationService authenticationService;
-	
+
+	@ValidAspect
 	@PostMapping("/login")
-	public ResponseEntity<?> login() {
+	public ResponseEntity<?> login(@Valid @RequestBody LoginReqDto loginReqDto, BindingResult bindingResult) {
+		System.out.println(loginReqDto);
 		
-		return ResponseEntity.ok(null);
+		authenticationService.login(loginReqDto);
+		
+		return ResponseEntity.ok(authenticationService.login(loginReqDto));
 	}
 	
-	@CrossOrigin
+
 	@ValidAspect
 	@PostMapping("/signup")
 	public ResponseEntity<?> signup(@Valid @RequestBody SignupReqDto signupReqDto, BindingResult bindingResult) { //bindingResult == :::ValidationAop - joinPoint
 		authenticationService.checkDuplicatedEmail(signupReqDto.getEmail());
-		authenticationService.signup(signupReqDto);
 		
-		return ResponseEntity.ok(null);
-	}
-	
-	
+		authenticationService.signup(signupReqDto);
 
-	
-	
+		return ResponseEntity.ok().body(true);
+	}	
 }

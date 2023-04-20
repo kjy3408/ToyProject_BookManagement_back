@@ -44,11 +44,20 @@
 		    LEFT OUTER JOIN role_tb rt ON(rt.role_id = at.role_id)
 		WHERE
 			ut.email = #{email}
+	
 	</select>
 
-	<insert id="saveUser" parameterType="com.toyproject.bookmanagement.entity.User">
+	<insert id="saveUser" 
+	parameterType="com.toyproject.bookmanagement.entity.User"  
+	useGeneratedKeys="true" 
+	keyProperty="userId">
 		INSERT INTO user_tb
 		VALUES (0, #{email}, #{password}, #{name}, #{provider})
+	</insert>
+	
+	<insert id="saveAuthority" parameterType="com.toyproject.bookmanagement.entity.Authority">
+		INSERT INTO authority_tb
+		VALUES (0, #{userId}, #{roleId})
 	</insert>
 	
 </mapper>

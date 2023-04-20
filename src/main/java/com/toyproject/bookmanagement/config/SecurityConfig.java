@@ -22,7 +22,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.csrf().disable();
 		http.httpBasic().disable();
 		http.formLogin().disable();
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); //세션사용X
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); //세션사용X (무상태성)
 		
 		http.authorizeHttpRequests()
 		.antMatchers("/auth/**").permitAll() //"/auth"요청은 다 허용해라
