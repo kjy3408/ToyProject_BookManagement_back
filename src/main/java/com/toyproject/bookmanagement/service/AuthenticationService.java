@@ -30,18 +30,14 @@ public class AuthenticationService implements UserDetailsService{//UserDetailsSe
 	
 	
 	public void checkDuplicatedEmail(String email) {
-		
-		User userEmail = userRepository.findUserByEmail(email);
-		
-		if(userEmail != null) {
-			
-			throw new CustomException("Duplicated Eamil", ErrorMap.builder().put("email", "사용중인 이메일입니다.").build());
+		if(userRepository.findUserByEmail(email) != null) {
+			throw new CustomException("Duplicated Email", 
+					ErrorMap.builder().put("email", "사용중인 이메일입니다").build());
 		}
 	}
 	
 	
 	public void signup(SignupReqDto signupReqDto) {
-		
 		User userEntity = signupReqDto.toEntity();
 		
 		userRepository.saveUser(userEntity);
@@ -60,9 +56,7 @@ public class AuthenticationService implements UserDetailsService{//UserDetailsSe
 			
 		//UserDetailsService의 loadUserByUsername() 호출이 된다!!!!!
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken); //얘가 실행되면 loadUserByUsername method 실행됨~!
-	
-		
-		
+
 		return jwtTokenProvider.makeToken(authentication);
 	}
 
@@ -76,5 +70,9 @@ public class AuthenticationService implements UserDetailsService{//UserDetailsSe
 		}
 		
 		return userEntity.toPrincipal();
+	}
+	
+	public boolean authenticated(String accessToken) {
+		return jwtTokenProvider.validateToken(jwtTokenProvider.getToken(accessToken));
 	}
 }
