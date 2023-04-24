@@ -25,7 +25,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); //세션사용X (무상태성)
 		
 		http.authorizeHttpRequests()
-		.antMatchers("/auth/**").permitAll() //"/auth"요청은 다 허용해라
-		.anyRequest().authenticated(); //나머지는 인증 거쳐라
+		.antMatchers("/auth/**")
+		.permitAll() //"/auth"요청은 다 허용해라
+		.anyRequest()
+		.permitAll();
+//		.authenticated(); //나머지는 인증 거쳐라
 	}
 }
