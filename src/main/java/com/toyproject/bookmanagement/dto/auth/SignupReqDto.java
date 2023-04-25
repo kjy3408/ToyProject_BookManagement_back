@@ -32,4 +32,5 @@ public class SignupReqDto {
 				.name(name)
 				.build();
 	}
+	
 }

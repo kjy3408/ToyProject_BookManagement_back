@@ -48,14 +48,35 @@
 		    
 		    ct.category_id,
 		    ct.category_name
-		FROM book_tb bt
+		FROM 
+			book_tb bt
 			LEFT OUTER JOIN author_tb at ON (at.author_id = bt.author_id)
 			LEFT OUTER JOIN publisher_tb pt ON (pt.publisher_id = bt.publisher_id)
 			LEFT OUTER JOIN category_tb ct ON (ct.category_id = bt.category_id)
+		WHERE
+		
+			ct.category_id in (1,2,3,4,5)
 		ORDER BY
 			bt.book_id
 		LIMIT
 			#{index}, 20;
 	</select>
 	
+	<select id="getTotalCount" parameterType="hashmap" resultType="Integer">
+		SELECT 
+			COUNT(book_id)
+		FROM
+			book_tb bt
+			LEFT OUTER JOIN author_tb at ON (at.author_id = bt.author_id)
+			LEFT OUTER JOIN publisher_tb pt ON (pt.publisher_id = bt.publisher_id)
+			LEFT OUTER JOIN category_tb ct ON (ct.category_id = bt.category_id)			
+	</select>
+	
+	<select id="getCategories" parameterType="list" resultMap="CategoryMap">
+		SELECT
+			category_id,
+			category_name
+		FROM
+			category_tb
+	</select>
 </mapper>

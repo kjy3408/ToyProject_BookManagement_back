@@ -1,16 +1,22 @@
 package com.toyproject.bookmanagement.security;
 
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.toyproject.bookmanagement.dto.auth.JwtTokenRespDto;
+import com.toyproject.bookmanagement.exception.CustomException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -37,8 +43,8 @@ public class JwtTokenProvider {
 		StringBuilder stringBuilder = new StringBuilder();
 		
 		authentication.getAuthorities().forEach(authority -> {
-			stringBuilder.append(authority.getAuthority() + ",");
-//			stringBuilder.append(",");
+			stringBuilder.append(authority.getAuthority());
+			stringBuilder.append(",");
 		});
 		
 		stringBuilder.delete(stringBuilder.length()-1, stringBuilder.length()); //쉼표제거
@@ -47,7 +53,7 @@ public class JwtTokenProvider {
 		
 		Date tokenExpiresDate = new Date(new Date().getTime() + (1000 * 60 * 60 *24));
 		
-		PrincipalUser userDetails = (PrincipalUser) authentication.getPrincipal();
+//		PrincipalUser userDetails = (PrincipalUser) authentication.getPrincipal();
 	
 		String accessToken = Jwts.builder()
 				.setSubject(authentication.getName())
@@ -105,6 +111,28 @@ public class JwtTokenProvider {
 				.build()
 				.parseClaimsJws(token)
 				.getBody();
+	}
+	
+	public Authentication getAuthentication(String accessToken) {
+		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+		Claims claims = getClaims(accessToken);
+		
+		if(claims.get("auth") == null) {
+			throw new CustomException("AccessToken에 권한 정보가 없습니다.");
+		}
+		
+		String auth = claims.get("auth").toString();
+		
+		for(String role :auth.split(",")) {
+			authorities.add(new SimpleGrantedAuthority(role));
+		}
+				
+		UserDetails userDetails = new User(claims.getSubject(), "", authorities);
+		
+		Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
+		
+		
+		return authentication;
 	}
 }
 
