@@ -1,5 +1,6 @@
 package com.toyproject.bookmanagement.entity;
 
+import com.toyproject.bookmanagement.dto.book.GetBookRespDto;
 import com.toyproject.bookmanagement.dto.book.SearchBookRespDto;
 
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ public class Book {
 	private int publisherId;
 	private int categoryId;
 	private String coverImgUrl;
+	private int likeCount;
 	
 	private Author author;
 	private Publisher publisher;
@@ -29,11 +31,22 @@ public class Book {
 				.authorId(authorId)
 				.authorName(author.getAuthorName())
 				.publisherId(publisherId)
-				.publisherNamel(publisher.getPublisherName())
+				.publisherName(publisher.getPublisherName())
 				.categoryId(categoryId)
 				.categoryName(category.getCategoryName())
 				.coverImgUrl(coverImgUrl)
+				.likeCount(likeCount)
+				.build();			
+	}
+	
+	public GetBookRespDto toGetBookDto() {
+		return GetBookRespDto.builder()
+				.bookId(bookId)
+				.bookName(bookName)
+				.authorName(author.getAuthorName())
+				.publisherName(publisher.getPublisherName())
+				.categoryName(category.getCategoryName())
+				.coverImgUrl(coverImgUrl)
 				.build();
-				
 	}
 }

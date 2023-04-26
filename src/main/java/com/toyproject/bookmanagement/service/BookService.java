@@ -5,12 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.toyproject.bookmanagement.dto.book.CategoryRespDto;
+import com.toyproject.bookmanagement.dto.book.GetBookRespDto;
 import com.toyproject.bookmanagement.dto.book.SearchBookReqDto;
 import com.toyproject.bookmanagement.dto.book.SearchBookRespDto;
+import com.toyproject.bookmanagement.entity.User;
 import com.toyproject.bookmanagement.repository.BookRepository;
+import com.toyproject.bookmanagement.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,25 +23,35 @@ import lombok.RequiredArgsConstructor;
 public class BookService {
 	
 	private final BookRepository bookRepository;
+	private final UserRepository userRepository;
+	
+	public GetBookRespDto getbook (int bookId) {
+	
+		
+		return bookRepository.getBook(bookId).toGetBookDto();
+	}
+	
 	
 	public Map<String, Object> searchBooks(SearchBookReqDto searchBookReqDto){
 		List<SearchBookRespDto> list = new ArrayList<>();
-		Map<String, Object> Map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
 		
 		int index = (searchBookReqDto.getPage() - 1) * 20;
 		
-		Map.put("index", index);
-		Map.put("categoryIds", searchBookReqDto.getCategoryIds());
+		map.put("index", index);
+		map.put("categoryIds", searchBookReqDto.getCategoryIds());
+		map.put("searchValue", searchBookReqDto.getSearchValue());
 		
-		bookRepository.searchBooks(Map).forEach(book -> {
+		bookRepository.searchBooks(map).forEach(book -> {
 			list.add(book.toDto());
 		});;
 		
-		int totalCount = bookRepository.getTotalCount(Map);
+		int totalCount = bookRepository.getTotalCount(map);
 		
 		Map<String, Object> responseMap = new HashMap<>();
 		responseMap.put("totalCount", totalCount);
 		responseMap.put("bookList", list);
+		
 		
 		return responseMap;
 	}
@@ -51,5 +65,24 @@ public class BookService {
 		
 		return list;
 	}
+	
+	public int getLikeCount(int bookId) {
+		
+		return bookRepository.getLikeCount(bookId);
+	}
+	
+	public int getLikeStatus(int bookId) {
+		String eamil = SecurityContextHolder.getContext().getAuthentication().getName();
+		User userEntity = userRepository.findUserByEmail(eamil);
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("bookId", bookId);
+		map.put("userId", userEntity.getUserId());
+		
+		return bookRepository.getLikeStatus(map);
+		
+		
+	}
+	
 	
 }
