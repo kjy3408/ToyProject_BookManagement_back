@@ -150,4 +150,45 @@
 		and user_id = #{userId}
 	</select>
 	
+	<insert id="setLike" parameterType="hashMap">
+		INSERT INTO book_like_tb
+		VALUES (0, #{bookId}, #{userId})
+	</insert>
+	
+	<delete id="disLike" parameterType="hashMap">
+		DELETE
+		FROM
+			book_like_tb
+		WHERE
+			book_id = #{bookId}
+		and user_id = #{userId}
+	</delete>
+	
+	<select id="getRentalListByBookId" parameterType="Integer"  resultType="com.toyproject.bookmanagement.entity.RentalList">
+		SELECT
+			blt.book_list_id AS bookListId, 
+		    bt.book_name AS bookName,
+		    brt.user_id AS userId
+		FROM
+			book_list_tb blt
+			LEFT OUTER JOIN book_tb bt ON (blt.book_id = bt.book_id)
+		    LEFT OUTER JOIN book_rental_tb brt ON (brt.book_list_id = blt.book_list_id)
+		WHERE
+			bt.book_id = #{bookId}
+	</select>
+	
+	<insert id="rentalBook" parameterType="hashMap">
+		INSERT INTO book_rental_tb
+		VALUES (0, #{bookListId}, #{userId})
+	</insert>
+	
+	<delete id="returnBook" parameterType="hashMap">
+		DELETE
+		FROM
+			book_rental_tb
+		WHERE
+			book_list_id = #{bookListId}
+		and user_id = #{userId}
+	</delete>
+	
 </mapper>

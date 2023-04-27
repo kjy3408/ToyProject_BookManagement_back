@@ -28,8 +28,6 @@ public class AuthenticationController {
 	@ValidAspect
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@Valid @RequestBody LoginReqDto loginReqDto, BindingResult bindingResult) {
-		System.out.println(loginReqDto);
-		
 		authenticationService.login(loginReqDto);
 		
 		return ResponseEntity.ok(authenticationService.login(loginReqDto));
@@ -40,7 +38,6 @@ public class AuthenticationController {
 	@PostMapping("/signup")
 	public ResponseEntity<?> signup(@Valid @RequestBody SignupReqDto signupReqDto, BindingResult bindingResult) { //bindingResult == :::ValidationAop - joinPoint
 		authenticationService.checkDuplicatedEmail(signupReqDto.getEmail());
-		
 		authenticationService.signup(signupReqDto);
 
 		return ResponseEntity.ok().body(true);
@@ -48,13 +45,11 @@ public class AuthenticationController {
 	
 	@GetMapping("/authenticated")
 	public ResponseEntity<?> authenticated(String accessToken) {
-		
 		return ResponseEntity.ok().body(authenticationService.authenticated(accessToken));
 	}
 	
 	@GetMapping("/principal")
 	public ResponseEntity<?> pricipal(String accessToken) {
-		
 		return ResponseEntity.ok().body(authenticationService.getPrincipal(accessToken));
 	}
 }
