@@ -39,6 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.authorizeRequests()
 		.antMatchers("/auth/**")
 		.permitAll() //"/auth"요청은 다 허용해라
+		.antMatchers("/admin/**")
+		.hasRole("ADMIN")
 		.anyRequest() 
 		.authenticated()
 		.and()

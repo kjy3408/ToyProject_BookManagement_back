@@ -115,8 +115,7 @@ public class BookService {
 		
 		map.put("bookListId", bookListId);
 		map.put("userId", userid);
-		
-		
+				
 		return bookRepository.rentalBook(map);
 	}
 	
@@ -125,10 +124,12 @@ public class BookService {
 		
 		map.put("bookListId", bookListId);
 		map.put("userId", userid);
-		
-		
+				
 		return bookRepository.returnBook(map);
 	}
 	
+	public int bookListRegister(int bookId) {
+		return bookRepository.registeBookList(bookId);
+	}
 	
 }

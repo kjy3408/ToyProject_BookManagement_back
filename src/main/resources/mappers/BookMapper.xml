@@ -191,4 +191,8 @@
 		and user_id = #{userId}
 	</delete>
 	
+	<insert id="registeBookList" parameterType="Integer">
+		INSERT INTO book_list_tb
+		VALUES (0, #{bookId}, now())
+	</insert>
 </mapper>
